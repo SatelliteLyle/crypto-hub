@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Prediction HUD - PROB-ENGINE v3.8</title>
+  <style>
+    :root {
+      --bg: #090a0f;
+      --card-bg: rgba(18, 22, 36, 0.75);
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --green: #10b981;
+      --red: #ef4444;
+      --accent: #3b82f6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 16px; display: flex; flex-direction: column; gap: 16px; min-height: 100vh; }
+    header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+    h1 { font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); }
+    .status { font-size: 0.75rem; padding: 4px 8px; border-radius: 12px; background: rgba(255,255,255,0.05); }
+    .status.online { color: var(--green); border: 1px solid var(--green); }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; backdrop-filter: blur(10px); }
+    .price-display { font-size: 2rem; font-weight: bold; font-family: monospace; }
+    .prob-bar-container { background: rgba(255,255,255,0.05); height: 12px; border-radius: 6px; overflow: hidden; margin: 12px 0; display: flex; }
+    .prob-bar-up { background: var(--green); width: 50%; transition: width 0.3s; }
+    .prob-bar-down { background: var(--red); width: 50%; transition: width 0.3s; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.85rem; color: var(--muted); }
+    .stat-val { color: var(--text); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PROB-ENGINE v3.8</h1>
+    <div id="status" class="status">Connecting...</div>
+  </header>
+
+  <div class="card">
+    <div style="font-size:0.8rem; color:var(--muted)">BTC / USD LIVE</div>
+    <div id="price" class="price-display">$0.00</div>
+    <div class="prob-bar-container">
+      <div id="bar-up" class="prob-bar-up"></div>
+      <div id="bar-down" class="prob-bar-down"></div>
+    </div>
+    <div class="stats">
+      <div>Bullish Prob: <span id="prob-up" class="stat-val">50%</span></div>
+      <div>Bearish Prob: <span id="prob-down" class="stat-val">50%</span></div>
+    </div>
+  </div>
+
+  <script>
+    const ws = new WebSocket('wss://ws-feed.exchange.coinbase.com');
+    const priceEl = document.getElementById('price');
+    const statusEl = document.getElementById('status');
+    const barUp = document.getElementById('bar-up');
+    const barDown = document.getElementById('bar-down');
+    const probUp = document.getElementById('prob-up');
+    const probDown = document.getElementById('prob-down');
+
+    let prices = [];
+
+    ws.onopen = () => {
+      statusEl.textContent = 'LIVE';
+      statusEl.classList.add('online');
+      ws.send(JSON.stringify({
+        type: 'subscribe',
+        product_ids: ['BTC-USD'],
+        channels: ['ticker']
+      }));
+    };
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'ticker' && data.price) {
+        const p = parseFloat(data.price);
+        priceEl.textContent = `$${p.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+        
+        prices.push(p);
+        if (prices.length > 20) prices.shift();
+        
+        if (prices.length > 5) {
+          let changes = 0;
+          for (let i = 1; i < prices.length; i++) {
+            if (prices[i] > prices[i-1]) changes++;
+          }
+          const upPct = Math.round((changes / (prices.length - 1)) * 100);
+          const downPct = 100 - upPct;
+          
+          barUp.style.width = `${upPct}%`;
+          barDown.style.width = `${downPct}%`;
+          probUp.textContent = `${upPct}%`;
+          probDown.textContent = `${downPct}%`;
+
+          if (upPct >= 75 && navigator.vibrate) navigator.vibrate(200);
+        }
+      }
+    };
+  </script>
+</body>
+</html>
