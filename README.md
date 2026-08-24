@@ -1,103 +1,147 @@
-# Predictions Predictor v4.0
+# Squeeze Odds Matrix Control v4.5
+**© 2026 SatelliteLyle - All Rights Reserved (Vaulted Copy)**
 
-**Client-side crypto prediction HUD with live Coinbase WebSocket feed and mobile haptic vibration alerts.**
-
-## Overview
-
-Predictions Predictor is a real-time Bitcoin price prediction engine that analyzes market momentum and provides probabilistic bullish/bearish forecasts. Built with pure client-side JavaScript, it connects directly to Coinbase's WebSocket feed for live BTC/USD data.
-
-## Features
-
-- **Live Price Feed**: Real-time BTC/USD ticker from Coinbase WebSocket
-- **Momentum Analysis**: Tracks last 20 price movements for trend identification
-- **Probability Display**: Visual bars showing bullish vs bearish momentum percentages
-- **Mobile Alerts**: Haptic vibration feedback when bullish probability reaches 75%+
-- **Minimal Design**: Clean, dark-themed interface optimized for quick decision-making
-
-## Technical Stack
-
-- **HTML5** - Semantic markup
-- **CSS3** - Modern styling with CSS variables and backdrop filters
-- **JavaScript (ES6)** - WebSocket client implementation
-- **Coinbase API** - Public WebSocket feed (no authentication required)
-
-## How It Works
-
-### Core Algorithm: `calculateContractMetrics()`
-
-```javascript
-function calculateContractMetrics(prices, strikePrice = null, timeRemainingSeconds = null) {
-  if (!prices || prices.length < 2) return null;
-
-  const activePrices = prices.slice(-20);
-  const currentPrice = activePrices[activePrices.length - 1];
-  const startPrice = activePrices[0];
-  const totalTicks = activePrices.length - 1;
-
-  let upTicks = 0;
-  let nonUpTicks = 0;
-
-  for (let i = 1; i < activePrices.length; i++) {
-    if (activePrices[i] > activePrices[i - 1]) {
-      upTicks++;
-    } else {
-      nonUpTicks++;
-    }
-  }
-
-  const upTickPct = Math.round((upTicks / totalTicks) * 100);
-  const nonUpTickPct = 100 - upTickPct;
-  const priceChange = Number((currentPrice - startPrice).toFixed(2));
-
-  return {
-    currentPrice: currentPrice.toFixed(2),
-    upTickPct: `${upTickPct}%`,
-    nonUpTickPct: `${nonUpTickPct}%`,
-    labelUp: "BUYING MOMENTUM",
-    labelNonUp: "SELLING/FLAT MOMENTUM",
-    netDollarChange: priceChange
-  };
-}
-```
-
-**Logic:**
-- Analyzes the last 20 price ticks from the WebSocket feed
-- Counts upward movements vs. flat/downward movements
-- Calculates percentage probabilities based on tick direction
-- Returns momentum labels and net dollar change since analysis window opened
-- Future-ready for strike price and time decay parameters
-
-### Live Usage
-
-Open `index.html` in any modern browser. The application will:
-1. Establish WebSocket connection to Coinbase
-2. Subscribe to BTC-USD ticker channel
-3. Display live price updates
-4. Calculate momentum probabilities in real-time
-5. Trigger haptic feedback on strong bullish signals (75%+)
-
-## Status Indicators
-
-- **Connecting...** - WebSocket handshake in progress
-- **LIVE** (Green) - Connected and receiving price data
-
-## Browser Compatibility
-
-Requires:
-- Modern browser with WebSocket support (all major browsers)
-- Haptic vibration support for mobile alerts (optional fallback for desktop)
-
-## Version History
-
-- **v4.0** - Official rebrand as "Predictions Predictor", contract metrics integration
-- **v3.8** - PROB-ENGINE initial release with basic momentum analysis
-
-## License
-
-Open source. Use for personal trading research only. Not financial advice.
+Professional risk management & market analysis dashboard for cryptocurrency trading.
 
 ---
 
-**Created by:** SatelliteLyle  
-**Repository:** https://github.com/SatelliteLyle/crypto-hub  
-**Live Demo:** https://satellitelyle.github.io/crypto-hub/
+## 🚀 Live Deployment (GitHub Pages)
+
+### Desktop / Laptop
+- **crypto-engine:** https://satellitelyle.github.io/crypto-engine/
+- **crypto-hub:** https://satellitelyle.github.io/crypto-hub/
+
+### Mobile & Tablet
+Both URLs are fully responsive and tested on:
+- ✅ iPhone/iPad (Safari)
+- ✅ Android (Chrome, Firefox)
+- ✅ Desktop (Chrome, Firefox, Safari, Edge)
+
+Simply visit the same URLs on your phone or tablet—no app installation needed.
+
+---
+
+## 🔐 Security & Copyright
+
+- **Copyrighted:** © 2026 SatelliteLyle
+- **Vaulted:** All source code protected and versioned
+- **License:** For personal trading research only. Not financial advice.
+- **Distribution:** DO NOT SHARE without explicit permission
+
+---
+
+## 📋 Features
+
+### Live Market Feed
+- Real-time BTC-USD ticker from Coinbase WebSocket
+- Price pulse animations (green ↑ / red ↓)
+- Connection status indicator
+
+### Consolidation Detection
+- Tracks 5-minute price volatility
+- Alerts when range drops below $15
+- Haptic vibration feedback (mobile)
+- Visual warning indicator
+
+### Risk Matrix Engine
+- **Lower Target Line Odds** (-900 to -1)
+- **Upper Target Line Odds** (-138 to -1)
+- **Target Squeeze Profit** ($)
+- Calculates:
+  - Combined capital risked
+  - Required win rate floor %
+  - Trades needed to recover from losses
+
+### Responsive Design
+- **Desktop:** Side-by-side control panel + live market iframe
+- **Tablet:** Stacked layout (50/50)
+- **Mobile:** Full-screen control panel
+
+---
+
+## 🛠️ Technical Stack
+
+- **HTML5** - Semantic structure + metadata
+- **CSS3** - CSS variables, animations, backdrop filters
+- **JavaScript (ES6)** - WebSocket client, event-driven calculations
+- **Coinbase API** - Public WebSocket (no auth required)
+
+---
+
+## 📱 Mobile Setup
+
+### iPhone/iPad
+1. Open Safari
+2. Visit: **https://satellitelyle.github.io/crypto-hub/**
+3. Tap Share → Add to Home Screen
+4. Creates shortcut to live dashboard
+
+### Android
+1. Open Chrome
+2. Visit: **https://satellitelyle.github.io/crypto-hub/**
+3. Tap Menu (⋮) → Install App
+4. Launches as PWA (Progressive Web App)
+
+---
+
+## 🔄 Automatic Live Updates
+
+Both repositories are linked to GitHub Pages:
+- Any commit to `main` branch → auto-deployed in **60–90 seconds**
+- Changes appear instantly on all devices (no refresh needed via browser cache)
+
+---
+
+## 💾 Backup & Vault Strategy
+
+### Keep Safe Copies
+1. Save `index.html` locally on your device
+2. Email a copy to yourself
+3. Store in Google Drive / iCloud / password manager
+4. Screenshot the repository settings page
+
+### If Page Breaks
+1. Go to the repo on GitHub
+2. Click **Upload file**
+3. Select your backed-up `index.html`
+4. Commit → Page updates in 60 seconds
+
+---
+
+## 📊 Consolidated Deployment Checklist
+
+- ✅ Code updated to v4.5 with fixed WebSocket endpoint
+- ✅ Copyright headers added to HTML & JavaScript
+- ✅ Mobile-first responsive design (480px, 768px, 1024px breakpoints)
+- ✅ GitHub Pages enabled on both repos
+- ✅ Live URLs active and tested
+- ✅ Cross-device compatibility verified
+- ✅ Haptic vibration alerts working
+- ✅ Consolidated trading matrix calculations optimized
+
+---
+
+## 🎯 Usage Tips
+
+1. **Bookmark the URLs** for quick access
+2. **Enable notifications** on mobile for market alerts
+3. **Test on all devices** before live trading
+4. **Keep one backup copy** in email draft
+5. **Monitor connection status** (green = live, red = reconnecting)
+
+---
+
+## ⚠️ Disclaimer
+
+This tool is for **research and analysis only**. Trading crypto involves significant risk. Always:
+- Test thoroughly before using real capital
+- Never trade with money you can't afford to lose
+- Consult financial advisors before major decisions
+- Keep this software private and secure
+
+---
+
+**Last Updated:** August 24, 2026  
+**Version:** 4.5 Vaulted  
+**Status:** ✅ Production Ready  
+**Creator:** SatelliteLyle
