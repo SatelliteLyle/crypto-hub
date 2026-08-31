@@ -1,0 +1,2 @@
+document.getElementById('range15').textContent = `${low15.toFixed(0)} – ${high15.toFixed(0)}`;
+document.getElementById('range60').textContent = `${low60.toFixed(0)} – ${high60.toFixed(0)}`;
